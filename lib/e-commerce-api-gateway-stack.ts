@@ -13,11 +13,26 @@ export class ECommerceApiGatewayStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props: ECommerceApiGatewayStackProps) {
         
         super(scope, id, props);
+        const logGroup = new cwLogs.LogGroup(this, "ECommerceApiGatewayLogs");
         const api = new apiGateway.RestApi(
             this,
             "ECommerceApiGateway",
             {
-                restApiName: "ECommerceApi"
+                restApiName: "ECommerceApi",
+                deployOptions: {
+                    accessLogDestination: new apiGateway.LogGroupLogDestination(logGroup),
+                    accessLogFormat: apiGateway.AccessLogFormat.jsonWithStandardFields({
+                        httpMethod: true,
+                        ip: true,
+                        protocol: true,
+                        requestTime: true,
+                        resourcePath: true,
+                        responseLength: true,
+                        status: true,
+                        caller: true,
+                        user: true
+                    })
+                }
             }
         )
 
