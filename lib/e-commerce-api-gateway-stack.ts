@@ -46,7 +46,7 @@ export class ECommerceApiGatewayStack extends cdk.Stack {
         productsResource.addMethod("POST", productsAdminIntegration);
 
         // "/products/{id}"
-        const productsIdResource = productsResource.addResource("{id]");
+        const productsIdResource = productsResource.addResource("{id}");
         productsIdResource.addMethod("GET", productsFetchIntegration);
         productsIdResource.addMethod("PUT", productsAdminIntegration);
         productsIdResource.addMethod("DELETE", productsAdminIntegration);
