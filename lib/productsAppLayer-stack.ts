@@ -14,7 +14,7 @@ export class ProductsAppLayerStack extends cdk.Stack {
             this,
             "ProductsLayers",
             {
-                code: lambda.Code.fromAsset('lambda/products/productsLayers'),
+                code: lambda.Code.fromAsset('lambda/products/layers/productsLayers'),
                 compatibleRuntimes: [lambda.Runtime.NODEJS_20_X],
                 layerVersionName: "ProductsLayers",
                 removalPolicy: cdk.RemovalPolicy.DESTROY
