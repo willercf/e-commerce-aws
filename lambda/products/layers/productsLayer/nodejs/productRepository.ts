@@ -21,9 +21,33 @@ export class ProductRepository {
     }
 
     async getAllProducts(): Promise<Product[]> {
-        const data = this.ddbClient.scan({
+        const data = await this.ddbClient.scan({
             TableName: this.productsDdb
         }).promise();
-        return (await data).Items as Product[];
+        return data.Items as Product[];
+    }
+
+    async getById(productId: string): Promise<Product> {
+        const data = await this.ddbClient.get({
+            TableName: this.productsDdb,
+            Key: {
+                id: productId
+            }
+        }).promise();
+        if (data.Item) {
+            return data.Item as Product;
+        } else {
+            throw Error('Product Not Found');
+        }
+    }
+
+    async create(product: Product): Promise<Product> {
+
+        product.id = uuid();
+        await this.ddbClient.put({
+            TableName: this.productsDdb,
+            Item: product
+        }).promise();
+        return product;
     }
 }
