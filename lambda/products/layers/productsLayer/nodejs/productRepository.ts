@@ -1,3 +1,4 @@
+import { Product } from "aws-cdk-lib/aws-servicecatalog";
 import { DocumentClient } from "aws-sdk/clients/dynamodb";
 import { v4 as uuid } from "uuid";
 
@@ -49,5 +50,20 @@ export class ProductRepository {
             Item: product
         }).promise();
         return product;
+    }
+
+    async delete(productId: string): Promise<Product> {
+        const data = await this.ddbClient.delete({
+            TableName: this.productsDdb,
+            Key: {
+                id: productId
+            },
+            ReturnValues: "ALL_OLD"
+        }).promise();
+        if (data.Attributes) {
+            return data.Attributes as Product;
+        } else {
+            throw new Error("Product Not Found");
+        }
     }
 }
