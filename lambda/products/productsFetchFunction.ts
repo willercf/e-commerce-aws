@@ -2,7 +2,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from "aws-lambda
 import { ProductRepository } from "/opt/nodejs/productsLayer";
 import { DynamoDB } from "aws-sdk";
 
-const productsDdb = process.env.PRODUCTS_DDB!;
+const productsDdb = process.env.PRODUCTS_TABLE!;
 const ddbClient = new DynamoDB.DocumentClient();
 const productRepository = new ProductRepository(ddbClient, productsDdb);
 
@@ -20,7 +20,7 @@ export async function handler(event: APIGatewayProxyEvent, context: Context): Pr
             const products = await productRepository.getAllProducts();
             return {
                 statusCode: 200,
-                body: JSON.stringify(products);
+                body: JSON.stringify(products)
             }
         }
     } else if (event.resource === "/products/{id}") {

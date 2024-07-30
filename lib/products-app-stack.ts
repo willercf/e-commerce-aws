@@ -49,7 +49,7 @@ export class ProductAppStack extends cdk.Stack {
                     sourceMap: false
                 },
                 environment: {
-                    PRODUCTS_TALBLE: this.productsTable.tableName
+                    PRODUCTS_TABLE: this.productsTable.tableName
                 },
                 layers: [productsLayer]
             }
@@ -71,7 +71,7 @@ export class ProductAppStack extends cdk.Stack {
                     sourceMap: false
                 },
                 environment: {
-                    PRODUCTS_TALBLE: this.productsTable.tableName
+                    PRODUCTS_TABLE: this.productsTable.tableName
                 },
                 layers: [productsLayer]
             }
