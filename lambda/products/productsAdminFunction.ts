@@ -2,7 +2,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from "aws-lambda
 import { Product, ProductRepository } from "/opt/nodejs/productsLayer";
 import { DynamoDB } from "aws-sdk";
 
-const productsDdb = process.env.PRODUCTS_DDB!;
+const productsDdb = process.env.PRODUCTS_TABLE!;
 const ddbClient = new DynamoDB.DocumentClient();
 const productRepository = new ProductRepository(ddbClient, productsDdb);
 
@@ -11,6 +11,7 @@ export async function handler(event: APIGatewayProxyEvent, context: Context): Pr
     const lambdaRequestId = context.awsRequestId;
     const apiRequestId = event.requestContext.requestId;
     console.log(`API Gateway RequestId: ${apiRequestId} - Lambda RequestId: ${lambdaRequestId}`);
+    console.log(`Product Table: ${productsDdb}`);
 
     if (event.resource === "/products") {
 
