@@ -12,6 +12,8 @@ export async function handler(event: APIGatewayProxyEvent, context: Context): Pr
     const apiRequestId = event.requestContext.requestId;
     console.log(`API Gateway Request Id: ${apiRequestId}`);
     console.log(`Lambda Request Id: ${lambdaRequestId}`);
+    console.log(`Product Table: ${productsDdb}`);
+    
     const method = event.httpMethod;
     if (event.resource === "/products") {
         if (method === "GET") {
