@@ -33,7 +33,8 @@ export class ECommerceApiGatewayStack extends cdk.Stack {
                         status: true,
                         caller: true,
                         user: true
-                    })
+                    }),
+                    tracingEnabled: true
                 }
             }
         )
