@@ -5,12 +5,10 @@ import * as ssm from "aws-cdk-lib/aws-ssm";
 
 export class ProductsAppLayerStack extends cdk.Stack {
 
-    readonly productsLayers: lambda.LayerVersion;
-
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
 
         super(scope, id, props);
-        this.productsLayers = new lambda.LayerVersion(
+        const productsLayers = new lambda.LayerVersion(
             this,
             "ProductsLayers",
             {
@@ -25,7 +23,26 @@ export class ProductsAppLayerStack extends cdk.Stack {
             "ProductsLayersVersionArn",
             {
                 parameterName: "ProductsLayersVersionArn",
-                stringValue: this.productsLayers.layerVersionArn
+                stringValue: productsLayers.layerVersionArn
+            }
+        );
+
+        const productEventsLayers = new lambda.LayerVersion(
+            this,
+            "ProductEventsLayers",
+            {
+                code: lambda.Code.fromAsset('lambda/products/layers/productEventsLayers'),
+                compatibleRuntimes: [lambda.Runtime.NODEJS_20_X],
+                layerVersionName: "ProductEventsLayers",
+                removalPolicy: cdk.RemovalPolicy.DESTROY
+            }
+        );
+        new ssm.StringParameter(
+            this,
+            "ProductEventsLayersVersionArn",
+            {
+                parameterName: "ProductEventsLayersVersionArn",
+                stringValue: productEventsLayers.layerVersionArn
             }
         );
     }
