@@ -94,6 +94,7 @@ function sendEvent(product: Product, eventType: ProductEventType, email: string,
     return lambdaClient.invoke({
         FunctionName: productEventsFunctionName,
         Payload: JSON.stringify(event),
-        InvocationType: "RequestResponse"
+        InvocationType: "Event"
+        //InvocationType: "RequestResponse"
     }).promise();
 }
