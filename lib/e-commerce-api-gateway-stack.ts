@@ -7,6 +7,7 @@ import { Construct } from "constructs";
 interface ECommerceApiGatewayStackProps extends cdk.StackProps {
     productsFetchHandler: lambdaNodeJS.NodejsFunction;
     productsAdminHandler: lambdaNodeJS.NodejsFunction;
+    ordersHandler: lambdaNodeJS.NodejsFunction;
 }
 
 export class ECommerceApiGatewayStack extends cdk.Stack {
@@ -39,9 +40,14 @@ export class ECommerceApiGatewayStack extends cdk.Stack {
             }
         )
 
+        this.createProductsApi(props, api);
+        this.createOrdersApi(props, api);
+    }
+
+    private createProductsApi(props: ECommerceApiGatewayStackProps, api: apiGateway.RestApi) {
         const productsFetchIntegration = new apiGateway.LambdaIntegration(props.productsFetchHandler);
         const productsAdminIntegration = new apiGateway.LambdaIntegration(props.productsAdminHandler);
-        // "/products"
+        //resource - /products
         const productsResource = api.root.addResource("products");
         productsResource.addMethod("GET", productsFetchIntegration);
         productsResource.addMethod("POST", productsAdminIntegration);
@@ -51,5 +57,14 @@ export class ECommerceApiGatewayStack extends cdk.Stack {
         productsIdResource.addMethod("GET", productsFetchIntegration);
         productsIdResource.addMethod("PUT", productsAdminIntegration);
         productsIdResource.addMethod("DELETE", productsAdminIntegration);
+    }
+
+    private createOrdersApi(props: ECommerceApiGatewayStackProps, api: apiGateway.RestApi) {
+        const ordersIntegration = new apiGateway.LambdaIntegration(props.ordersHandler);
+        //resource - /orders
+        const ordersResource = api.root.addResource("orders");
+        ordersResource.addMethod("GET", ordersIntegration);
+        ordersResource.addMethod("POST", ordersIntegration);
+        ordersResource.addMethod("DELETE", ordersIntegration);
     }
 }
