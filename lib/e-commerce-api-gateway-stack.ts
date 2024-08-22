@@ -63,8 +63,24 @@ export class ECommerceApiGatewayStack extends cdk.Stack {
         const ordersIntegration = new apiGateway.LambdaIntegration(props.ordersHandler);
         //resource - /orders
         const ordersResource = api.root.addResource("orders");
+
+        const ordersDeleteValidator = new apiGateway.RequestValidator(this, "OrdersDeleteValidator", {
+            restApi: api,
+            requestValidatorName: "OrdersDeleteValidator",
+            validateRequestParameters: true
+        });
+
+        // GET /orders?email=will@teste.com&orderId=123
         ordersResource.addMethod("GET", ordersIntegration);
+        // POST /orders
         ordersResource.addMethod("POST", ordersIntegration);
-        ordersResource.addMethod("DELETE", ordersIntegration);
+        // DELETE /orders?email=will@teste.com&orderId=123
+        ordersResource.addMethod("DELETE", ordersIntegration, {
+            requestParameters: {
+                'method.request.querystring.email': true,
+                'method.request.querystring.orderId': true
+            },
+            requestValidator: ordersDeleteValidator
+        });
     }
 }
