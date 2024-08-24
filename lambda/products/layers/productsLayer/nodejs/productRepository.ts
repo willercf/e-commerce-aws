@@ -42,6 +42,23 @@ export class ProductRepository {
         }
     }
 
+    async getByIds(productIds: string[]): Promise<Product[]> {
+
+        const keys: { id: string; }[] = [];
+        productIds.forEach((productId) => {
+            keys.push( {id: productId});
+        });
+
+        const result = await this.ddbClient.batchGet({
+            RequestItems: {
+                [this.productsDdb]: {
+                    Keys: keys
+                }
+            }
+        }).promise();
+        return result.Responses![this.productsDdb] as Product[];
+    }
+
     async create(product: Product): Promise<Product> {
 
         product.id = uuid();
