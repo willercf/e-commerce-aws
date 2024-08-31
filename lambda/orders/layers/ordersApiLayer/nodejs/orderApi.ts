@@ -32,6 +32,7 @@ export interface OrderProductResponse {
 export interface OrderResponse {
     email: string,
     id: string,
+    createdAt: number,
     billing: {
         payment: PaymentType,
         totalPrice: number

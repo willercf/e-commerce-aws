@@ -84,7 +84,7 @@ export class ProductRepository {
         }
     }
 
-    async update(productId: string, product: Prduct): Promise<Product> {
+    async update(productId: string, product: Product): Promise<Product> {
 
         const data = await this.ddbClient.update({
             TableName: this.productsDdb,
