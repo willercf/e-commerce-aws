@@ -72,6 +72,7 @@ export class OrdersAppStack extends cdk.Stack {
         );
 
         ordersTable.grantWriteData(this.ordersHandler);
+        ordersTable.grantReadData(this.ordersHandler);
         props.productsTable.grantReadData(this.ordersHandler);
     }    
 }
