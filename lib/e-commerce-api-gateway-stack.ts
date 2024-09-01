@@ -47,15 +47,57 @@ export class ECommerceApiGatewayStack extends cdk.Stack {
     private createProductsApi(props: ECommerceApiGatewayStackProps, api: apiGateway.RestApi) {
         const productsFetchIntegration = new apiGateway.LambdaIntegration(props.productsFetchHandler);
         const productsAdminIntegration = new apiGateway.LambdaIntegration(props.productsAdminHandler);
+
+        const productRequestValidator = new apiGateway.RequestValidator(this, "ProductRequestValidator", {
+            restApi: api,
+            requestValidatorName: "Product request validator",
+            validateRequestBody: true
+        });
+        const productModel = new apiGateway.Model(this, "ProductMOdel", {
+            modelName: "ProductModel",
+            restApi: api,
+            schema: {
+                type: apiGateway.JsonSchemaType.OBJECT,
+                properties: {
+                    productName: {
+                        type: apiGateway.JsonSchemaType.STRING
+                    },
+                    code: {
+                        type: apiGateway.JsonSchemaType.STRING
+                    },
+                    price: {
+                        type: apiGateway.JsonSchemaType.NUMBER
+                    },
+                    model: {
+                        type: apiGateway.JsonSchemaType.STRING
+                    },
+                    productUrl: {
+                        type: apiGateway.JsonSchemaType.STRING
+                    }
+                },
+                required: ["productName", "code", "price", "model", "productUrl"]
+            }
+        });
+
         //resource - /products
         const productsResource = api.root.addResource("products");
         productsResource.addMethod("GET", productsFetchIntegration);
-        productsResource.addMethod("POST", productsAdminIntegration);
+        productsResource.addMethod("POST", productsAdminIntegration, {
+            requestValidator: productRequestValidator,
+            requestModels: {
+                "application/json": productModel
+            }
+        });
 
         // "/products/{id}"
         const productsIdResource = productsResource.addResource("{id}");
         productsIdResource.addMethod("GET", productsFetchIntegration);
-        productsIdResource.addMethod("PUT", productsAdminIntegration);
+        productsIdResource.addMethod("PUT", productsAdminIntegration, {
+            requestValidator: productRequestValidator,
+            requestModels: {
+                "application/json": productModel
+            }
+        });
         productsIdResource.addMethod("DELETE", productsAdminIntegration);
     }
 
